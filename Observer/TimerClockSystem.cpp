@@ -39,7 +39,7 @@ class Subject {
 
 class Timer: public Subject {
         protected:
-                int hour;
+                int hour; // Assumption: 24 hour data of a certain time zone
                 int minute;
                 int second;
         public:
@@ -62,6 +62,9 @@ class Timer: public Subject {
                         return second;
                 }
                 virtual Meridiem AMPM() {
+                        // Notice here GetHour() is virtual method
+                        // Different time zone timer will return different
+                        // time zone hour data
                         return GetHour() > 12 ? PM : AM; 
                 }
 };
@@ -78,9 +81,6 @@ class TimerEST: public Timer {
                 virtual int GetHour() { 
                         return hour + 4;
                 }
-                virtual Meridiem AMPM() {
-                        return GetHour() > 16 ? PM : AM;
-                }
 };
 
 class TimerCST: public Timer {
@@ -90,9 +90,6 @@ class TimerCST: public Timer {
                 // Return different hour data
                 virtual int GetHour() { 
                         return hour + 5;
-                }
-                virtual Meridiem AMPM() {
-                        return GetHour() > 17 ? PM : AM;
                 }
 };
 
@@ -137,10 +134,11 @@ class HourClock: public Clock {
 };
 
 class MinuteClock: public Clock {
-        private:
+        protected:
                 int hour;
                 int minute;
         public:
+                MinuteClock() {}
                 MinuteClock(Subject *source) {}
                 virtual ~MinuteClock() {}
                 virtual void Update() {
@@ -151,6 +149,29 @@ class MinuteClock: public Clock {
                 virtual string DisplayTime() {
                         return to_string(hour) + ":" +
                                 to_string(minute);
+                }
+};
+
+/**
+ * Clock with 12 hour format
+ */
+class MinuteClock12Hour: public MinuteClock {
+        private:
+                Meridiem meridiem;
+        public:
+                MinuteClock12Hour(Subject *source) {}
+                virtual ~MinuteClock12Hour() {}
+                virtual void Update() {
+                        hour = timer->GetHour() - 12;
+                        minute = timer->GetMinute();
+                        meridiem = timer->AMPM();
+                        DisplayTime();
+                }
+                virtual string DisplayTime() {
+                        string meridiemStr = meridiem == AM ? "AM" : "PM";
+                        return to_string(hour) + ":" +
+                                to_string(minute) + " " +
+                                meridiemStr;
                 }
 };
 
@@ -183,18 +204,12 @@ class DigitalClock: public SecondClock {
         public:
                 DigitalClock(Subject *source) {}
                 virtual ~DigitalClock() {}
-                virtual string DisplayTime() {
-                        
-                }
 };
 
 class AnalogClock: public SecondClock {
         public:
                 AnalogClock(Subject *source) {}
                 virtual ~AnalogClock() {}
-                virtual string DisplayTime() {
-
-                }
 };
 
 int main() {
