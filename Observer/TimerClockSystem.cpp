@@ -119,9 +119,10 @@ class Clock: public Observer {
  * Clock with different precision
  */
 class HourClock: public Clock {
-        private:
+        protected:
                 int hour;
         public:
+                HourClock() {}
                 HourClock(Subject *source) {}
                 virtual ~HourClock() {}
                 virtual void Update() {
@@ -133,9 +134,8 @@ class HourClock: public Clock {
                 }
 };
 
-class MinuteClock: public Clock {
+class MinuteClock: public HourClock {
         protected:
-                int hour;
                 int minute;
         public:
                 MinuteClock() {}
@@ -175,10 +175,8 @@ class MinuteClock12Hour: public MinuteClock {
                 }
 };
 
-class SecondClock: public Clock {
+class SecondClock: public MinuteClock {
         private:
-                int hour;
-                int minute;
                 int second;
         public:
                 SecondClock() {}
