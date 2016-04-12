@@ -1,0 +1,2 @@
+#define MDABankAccount_VERSION_MAJOR @MDABankAccount_VERSION_MAJOR@
+#define MDABankAccount_VERSION_MINOR @MDABankAccount_VERSION_MINOR@
