@@ -2,9 +2,6 @@
 #include "Actions.hpp"
 
 
-State::State(ModelDrivenArchi *ctxt, OutputProcessor *o): context(ctxt), op(o) {
-}
-
 void StartState::open() {
         context->changeState(IDLE);
         op->storePin();
@@ -61,11 +58,11 @@ void ReadyState::lock() {
         context->changeState(LOCK);
 }
 
-void ReadyState::withdrawnFail() {
+void ReadyState::withdrawFail() {
         op->noFundMsg();
 }
 
-void ReadyState::withdrawn() {
+void ReadyState::withdraw() {
         context->changeState(TEMP);
         op->doWithdraw();
 }
@@ -95,7 +92,7 @@ void OverdrawnState::deposit() {
         op->doDeposit();
 }
 
-void OverdrawnState::withdrawn() {
+void OverdrawnState::withdraw() {
         op->belowMinMsg();
 }
 
