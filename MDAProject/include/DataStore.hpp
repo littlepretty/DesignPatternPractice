@@ -16,7 +16,7 @@ class DataStore1: public DataStore {
                 float temp_w;
                 string temp_pin;
                 string temp_id;
-                float temp_b
+                float temp_balance;
         public:
                 DataStore1() {};
                 virtual ~DataStore1() {};
@@ -40,10 +40,10 @@ class DataStore1: public DataStore {
                         temp_pin = p;
                 }
                 void setTempId(string i) {
-                        temp_i = i;
+                        temp_id = i;
                 }
-                void setTempB(float b) {
-                        temp_b = b;
+                void setTempBalance(float b) {
+                        temp_balance = b;
                 }
 
                 string getPin() {
@@ -68,7 +68,7 @@ class DataStore1: public DataStore {
                         return temp_id;
                 }
                 float getTempB() {
-                        return temp_b;
+                        return temp_balance;
                 }
 };
 
@@ -81,7 +81,7 @@ class DataStore2: public DataStore {
                 int temp_w;
                 int temp_pin;
                 int temp_id;
-                int temp_b;
+                int temp_balance;
         public:
                 DataStore2() {};
                 virtual ~DataStore2() {};
@@ -107,8 +107,8 @@ class DataStore2: public DataStore {
                 void setTempId(int i) {
                         temp_i = i;
                 }
-                void setTempB(int b) {
-                        temp_b = b;
+                void setTempBalance(int b) {
+                        temp_balance = b;
                 }
                 
                 int getPin() {
@@ -132,8 +132,8 @@ class DataStore2: public DataStore {
                 int getTempId() {
                         return temp_id;
                 }
-                int getTempB() {
-                        return temp_b;
+                int getTempBalance() {
+                        return temp_balance;
                 }
 };
 

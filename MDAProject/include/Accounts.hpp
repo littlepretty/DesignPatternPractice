@@ -1,4 +1,6 @@
-#include <iostream>
+#ifndef _ACCOUNTS_HPP
+#define _ACCOUNTS_HPP
+
 #include "AbstractFactory.hpp"
 #include "ModelDrivenArch.hpp"
 #include "DataStore.h"
@@ -56,3 +58,4 @@ class Account2 {
                 void close();
 };
 
+#endif
