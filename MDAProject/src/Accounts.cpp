@@ -3,7 +3,7 @@
 
 
 void Account1::init(AbstractFactory *af) {
-        ds = af->createDS1();
+        ds = (DataStore1 *)af->createDS();
 }
 
 void Account1::open(string p, string y, float a) {
@@ -90,7 +90,7 @@ void Account1::unlock(string x) {
 
 
 void Account2::init(AbstractFactory *af) {
-        ds = af->createDS2();
+        ds = (DataStore2 *)af->createDS();
 }
 
 void Account2::OPEN(int p, int y, int a) {
