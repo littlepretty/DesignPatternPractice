@@ -5,9 +5,6 @@
 void StartState::open() {
         context->changeState(IDLE);
         op->storeCardData();
-        //op->storePin();
-        //op->storeId();
-        //op->storeBalance();
 }
 
 
@@ -29,8 +26,7 @@ void CheckPinState::correctPin() {
 void CheckPinState::incorrectPin(int max) {
         int attempts = context->getAttempts();
         if (attempts >= max) {
-                context->changeState(IDLE);
-                //context->setAttempts(0); ???
+                context->changeState(IDLE); 
                 op->tooManyAttemptMsg();
         } else if (attempts < max) {
                 context->setAttempts(++attempts);
@@ -135,7 +131,7 @@ void TempState::belowMin() {
 
 void TempState::withdrawBelowMin() {
         context->changeState(OVERDRAWN);
-        op->penalty();
+        op->payPenalty();
 }
 
 
@@ -159,7 +155,7 @@ ModelDrivenArch::ModelDrivenArch(OutputProcessor *op) {
         states.push_back(ss2);
         states.push_back(cs);
         states.push_back(ts);
- 
+
         current = states[0];
 }
 
@@ -201,5 +197,91 @@ void ModelDrivenArch::changeState(StateEnum stateID) {
                 default:
                         break;
         }
+}
+void ModelDrivenArch::setAttempts(int a) {
+        attempts = a;
+}
+int ModelDrivenArch::getAttempts() {
+        return attempts;
+}
+
+void ModelDrivenArch::open() {
+        current->open();
+}
+
+void ModelDrivenArch::login() {
+        current->login();
+}
+
+void ModelDrivenArch::loginFail() {
+        current->loginFail();
+}
+
+void ModelDrivenArch::logout() {
+        current->logout();
+}
+
+void ModelDrivenArch::incorrectPin(int max) {
+        current->incorrectPin(max);
+}
+
+void ModelDrivenArch::correctPin() {
+        current->correctPin();
+}
+
+void ModelDrivenArch::aboveMin() {
+        current->aboveMin();
+}
+
+void ModelDrivenArch::belowMin() {
+        current->belowMin();
+}
+
+void ModelDrivenArch::balance() {
+        current->balance();
+}
+
+void ModelDrivenArch::withdraw() {
+        current->withdraw();
+}
+
+void ModelDrivenArch::withdrawFail() {
+        current->withdrawFail();
+}
+
+void ModelDrivenArch::withdrawBelowMin() {
+        current->withdrawBelowMin();
+}
+
+void ModelDrivenArch::deposit() {
+        current->deposit();
+}
+
+void ModelDrivenArch::lock() {
+        current->lock();
+}
+
+void ModelDrivenArch::lockFail() {
+        current->lockFail();
+}
+
+void ModelDrivenArch::unlock() {
+        current->unlock();
+}
+
+void ModelDrivenArch::unlockFail() {
+        current->unlockFail();
+}
+
+void ModelDrivenArch::suspend() {
+        current->suspend();
+}
+
+void ModelDrivenArch::activate() {
+        current->activate();
+}
+
+void ModelDrivenArch::close() {
+        current->close();
 }
 
