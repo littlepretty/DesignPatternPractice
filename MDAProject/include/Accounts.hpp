@@ -6,7 +6,7 @@
 
 class AbstractFactory;
 
-class Account1: public Account {
+class Account1 {
         private:
                 ModelDrivenArch *mda;
                 DataStore1 *ds; 
@@ -16,7 +16,6 @@ class Account1: public Account {
                 Account1(ModelDrivenArch *m, int mb = 500, int ma = 3):
                         mda(m), min_balance(mb), max_attempts(ma) {};
                 virtual ~Account1() {
-                        delete mda;
                         delete ds;
                 }
 
@@ -33,7 +32,7 @@ class Account1: public Account {
                 void unlock(string x);
 };
 
-class Account2: {
+class Account2 {
         private:
                 ModelDrivenArch *mda;
                 DataStore2 *ds; 
@@ -43,7 +42,6 @@ class Account2: {
                 Account2(ModelDrivenArch *m, int mb = 0, int ma = 2):
                         mda(m), min_balance(mb), max_attempts(ma) {}; 
                 virtual ~Account2() {
-                        delete mda;
                         delete ds;
                 }
 

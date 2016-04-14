@@ -7,9 +7,6 @@ class AbstractFactory;
 
 class StoreCardDataAction {
         public:
-                StoreCardDataAction() {};
-                virtual ~StorePinAction() {};
-
                 virtual void storeCardData(DataStore *ds) = 0;
 };
 
@@ -82,21 +79,6 @@ class PPAction2: public PromptPinAction {
         public:
                 virtual void promptPin();
 };
-
-//class StoreAttemptAction {
-        //public:
-                //void storeAttempt() = 0;
-//};
-
-//class SAAction1: public StoreAttemptAction {
-        //public:
-                //void storeAttempt();
-//};
-
-//class SAAction2: public StoreAttemptAction {
-        //public:
-                //void storeAttempt();
-//};
 
 class DisplyMenuAction {
         public:
@@ -188,19 +170,23 @@ class BMMAction2: public BelowMinMsgAction {
                 virtual void belowMinMsg();
 };
 
-class PenaltyAction {
+class DeductPenaltyAction {
+        protected:
+                const float penalty;
         public:
-                virtual void penalty() = 0;
+                DeductPenaltyAction(float p = 0.0f): penalty(p) {};
+                virtual void payPenalty(DataStore *ds) = 0;
 };
 
-class PAction1: public PenaltyAction {
+class DPAction1: public DeductPenaltyAction {
         public:
-                virtual void penalty();
+                DPAction1(float p = 20.0f): DeductPenaltyAction(p) {};
+                virtual void payPenalty(DataStore *ds);
 };
 
-class PAction2: public PenaltyAction {
+class DPAction2: public DeductPenaltyAction {
         public:
-                virtual void penalty();
+                virtual void payPenalty(DataStore *ds);
 };
 
 
@@ -218,63 +204,24 @@ class OutputProcessor {
                 DisplayBalanceAction *dba;
                 DoWithdrawAction *dwa;
                 BelowMinMsgAction *bmma;
-                PenaltyAction *pa;
+                DeductPenaltyAction *dpa;
         public:
-                OutputProcessor();
-                virtual ~OutputProcessor() {
-                       delete ds;
-                       delete scda;
-                       delete ipma;
-                       delete iima;
-                       delete tmama;
-                       delete ppa;
-                       delete dma;
-                       delete dda;
-                       delete nfma;
-                       delete dba;
-                       delete dwa;
-                       delete bmma;
-                       delete pa;
-                };
+                OutputProcessor() {};
+                virtual ~OutputProcessor();
                 
                 void init(AbstractFactory *af);
-
-                void storeCardData() {
-                        scda->storeCardData(ds);
-                };
-                void incorrectPinMsg() {
-                        ipma->incorrectPinMsg();
-                };
-                void incorrectIdMsg() {
-                        iima->incorrectIdMsg();
-                };
-                void tooManyAttemptMsg() {
-                        tmama->tooManyAttemptMsg();
-                };
-                void promptPin() {
-                        ppa->promptPin();
-                };
-                void displayMenu() {
-                        dma->displayMenu();
-                };
-                void doDeposit() {
-                        dda->doDeposit(ds);
-                };
-                void noFundMsg() {
-                        nfma->noFundMsg();
-                };
-                void displayBalance() {
-                        dba->displayBalance(ds);
-                };
-                void doWithdraw() {
-                        dwa->doWithdraw(ds);
-                };
-                void belowMinMsg() {
-                        bmma->belowMinMsg();
-                };
-                void penalty() {
-                        pa->penalty();
-                };
+                void storeCardData();
+                void incorrectPinMsg();
+                void incorrectIdMsg();
+                void tooManyAttemptMsg();
+                void promptPin();
+                void displayMenu();
+                void doDeposit();
+                void noFundMsg();
+                void displayBalance();
+                void doWithdraw();
+                void belowMinMsg();
+                void payPenalty();
 };
 
 #endif

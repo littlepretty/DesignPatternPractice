@@ -26,7 +26,7 @@ class State {
                 OutputProcessor *op;
         public:
                 State(ModelDrivenArch *ctxt,
-                                OutputProcessor *): context(ctxt), op(o) {};
+                                OutputProcessor *o): context(ctxt), op(o) {};
                 virtual ~State() {};
 
                 virtual void open() {};
@@ -130,7 +130,7 @@ class SuspendedState: public State {
                 virtual void balance();        
                 virtual void close();
                 virtual void activate();
-}
+};
 
 class ClosedState: public State {
         public:        
@@ -162,73 +162,29 @@ class ModelDrivenArch {
 
                 void changeState(StateEnum stateID);
 
-                void setAttempts(int a) {
-                        attempts = a;
-                };
-                int getAttempts() {
-                        return attempts;
-                };
+                void setAttempts(int a);
+                int getAttempts();
 
-                void open() {
-                        current->open();
-                };
-                void login() {
-                        current->login();
-                };
-                void loginFail() {
-                        current->loginFail();
-                };
-                void logout() {
-                        current->logout();
-                };
-                void incorrectPin(int max) {
-                        current->incorrectPin(max);
-                };
-                void correctPin() {
-                        current->correctPin();
-                };
-                void aboveMin() {
-                        current->aboveMin();
-                };
-                void belowMin() {
-                        current->belowMin();
-                };
-                void balance() {
-                        current->balance();
-                };
-                void withdraw() {
-                        current->withdraw();
-                };
-                void withdrawFail() {
-                        current->withdrawFail();
-                };
-                void withdrawBelowMin() {
-                        current->withdrawBelowMin();
-                };
-                void deposit() {
-                        current->deposit();
-                };
-                void lock() {
-                        current->lock();
-                };
-                void lockFail() {
-                        current->lockFail();
-                };
-                void unlock() {
-                        current->unlock();
-                };
-                void unlockFail() {
-                        current->unlockFail();
-                };
-                void suspend() {
-                        current->suspend();
-                };
-                void activate() {
-                        current->activate();
-                }
-                void close() {
-                        current->close();
-                };
+                void open();
+                void login();
+                void loginFail();
+                void logout();
+                void incorrectPin(int max);
+                void correctPin();
+                void aboveMin();
+                void belowMin();
+                void balance();
+                void withdraw();
+                void withdrawFail();
+                void withdrawBelowMin();
+                void deposit();
+                void lock();
+                void lockFail();
+                void unlock();
+                void unlockFail();
+                void suspend();
+                void activate();
+                void close();
 };
 
 #endif
