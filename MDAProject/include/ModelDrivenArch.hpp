@@ -1,7 +1,10 @@
 #ifndef _MODELDRIVENARCH_HPP
 #define _MODELDRIVENARCH_HPP
 
-#include "Actions.h"
+#include <vector>
+#include "Actions.hpp"
+
+using namespace std;
 
 typedef enum {
         START = 0,
@@ -10,18 +13,20 @@ typedef enum {
         READY,
         OVERDRAWN,
         LOCKED,
+        SUSPENDED,
         CLOSED,
         TEMP
 } StateEnum;
 
+class ModelDrivenArch;
 
 class State {
-        private:
+        protected:
                 ModelDrivenArch *context;
                 OutputProcessor *op;
         public:
                 State(ModelDrivenArch *ctxt,
-                                OutputProcessor *o): context(ctxt), op(o) {};
+                                OutputProcessor *): context(ctxt), op(o) {};
                 virtual ~State() {};
 
                 virtual void open() {};
@@ -35,11 +40,14 @@ class State {
                 virtual void balance() {};
                 virtual void withdraw() {};
                 virtual void withdrawFail() {};
+                virtual void withdrawBelowMin() {};
                 virtual void deposit() {};
                 virtual void lock() {};
                 virtual void lockFail() {};
                 virtual void unlock() {};
                 virtual void unlockFail() {};
+                virtual void suspend() {};
+                virtual void activate() {};
                 virtual void close() {};
 };
 
@@ -69,7 +77,7 @@ class CheckPinState: public State {
                 virtual ~CheckPinState() {};
 
                 virtual void correctPin();
-                virtual void incorrectPin();
+                virtual void incorrectPin(int max);
                 virtual void logout();
 };
 
@@ -82,9 +90,11 @@ class ReadyState: public State {
                 virtual void balance();
                 virtual void lockFail();
                 virtual void lock();
+                virtual void suspend();
                 virtual void withdrawFail();
                 virtual void withdraw();
                 virtual void deposit();
+                virtual void logout();
 };
 
 class OverdrawnState: public State {
@@ -107,11 +117,20 @@ class LockedState: public State {
                                 OutputProcessor *o): State(ctxt, o) {};
                 virtual ~LockedState() {};
 
-                virtual void balance();
                 virtual void unlockFail();
                 virtual void unlock();
-                virtual void close();
 };
+
+class SuspendedState: public State {
+        public:
+                SuspendedState(ModelDrivenArch *ctxt,
+                                OutputProcessor *o): State(ctxt, o) {};
+                virtual ~SuspendedState() {};
+
+                virtual void balance();        
+                virtual void close();
+                virtual void activate();
+}
 
 class ClosedState: public State {
         public:        
@@ -128,6 +147,7 @@ class TempState: public State {
 
                 virtual void aboveMin();
                 virtual void belowMin();
+                virtual void withdrawBelowMin();
 };
 
 
@@ -137,7 +157,7 @@ class ModelDrivenArch {
                 State *current;
                 int attempts;
         public:
-                ModelDrivenArch();
+                ModelDrivenArch(OutputProcessor *op);
                 virtual ~ModelDrivenArch();
 
                 void changeState(StateEnum stateID);
@@ -182,6 +202,9 @@ class ModelDrivenArch {
                 void withdrawFail() {
                         current->withdrawFail();
                 };
+                void withdrawBelowMin() {
+                        current->withdrawBelowMin();
+                };
                 void deposit() {
                         current->deposit();
                 };
@@ -197,6 +220,12 @@ class ModelDrivenArch {
                 void unlockFail() {
                         current->unlockFail();
                 };
+                void suspend() {
+                        current->suspend();
+                };
+                void activate() {
+                        current->activate();
+                }
                 void close() {
                         current->close();
                 };

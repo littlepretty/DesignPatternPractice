@@ -4,31 +4,35 @@
 
 void StartState::open() {
         context->changeState(IDLE);
-        op->storePin();
-        op->storeId();
-        op->storeBalance();
+        op->storeCardData();
+        //op->storePin();
+        //op->storeId();
+        //op->storeBalance();
 }
 
+
 void IdleState::login() {
-        context->setAttempts(0);
         context->changeState(CHECKPIN);
+        context->setAttempts(0);
 }
 
 void IdleState::loginFail() {
         op->incorrectIdMsg();
 }
 
+
 void CheckPinState::correctPin() {
         context->changeState(TEMP);
         op->displayMenu();
 }
 
-void CheckPinState::incorrectPin(int max_attempts) {
-        int attempts = context->getAttmpts();
-        if (attempts >= max_attempts) {
+void CheckPinState::incorrectPin(int max) {
+        int attempts = context->getAttempts();
+        if (attempts >= max) {
                 context->changeState(IDLE);
+                //context->setAttempts(0); ???
                 op->tooManyAttemptMsg();
-        } else if (attempts < max_attempts) {
+        } else if (attempts < max) {
                 context->setAttempts(++attempts);
                 op->incorrectPinMsg();
         }
@@ -38,13 +42,6 @@ void CheckPinState::logout() {
         context->changeState(IDLE);
 }
 
-void TempState::aboveMin() {
-        context->changeState(READY);
-}
-
-void TempState::belowMin() {
-        context->changeState(OVERDRAWN);
-}
 
 void ReadyState::balance() {
         op->displayBalance();
@@ -55,7 +52,11 @@ void ReadyState::lockFail() {
 }
 
 void ReadyState::lock() {
-        context->changeState(LOCK);
+        context->changeState(LOCKED);
+}
+
+void ReadyState::suspend() {
+        context->changeState(SUSPENDED);
 }
 
 void ReadyState::withdrawFail() {
@@ -71,6 +72,11 @@ void ReadyState::deposit() {
         op->doDeposit();
 }
 
+void ReadyState::logout() {
+        context->changeState(IDLE);
+}
+
+
 void OverdrawnState::logout() {
         context->changeState(IDLE);
 }
@@ -84,7 +90,7 @@ void OverdrawnState::lockFail() {
 }
 
 void OverdrawnState::lock() {
-        context->changeState(LOCK);
+        context->changeState(LOCKED);
 }
 
 void OverdrawnState::deposit() {
@@ -96,16 +102,9 @@ void OverdrawnState::withdraw() {
         op->belowMinMsg();
 }
 
-void LockedState::balance() {
-        op->displayBalance();
-}
 
 void LockedState::unlock() {
         context->changeState(TEMP);
-}
-
-void LockedState::close() {
-        context->changeState(CLOSED);
 }
 
 void LockedState::unlockFail() {
@@ -113,31 +112,60 @@ void LockedState::unlockFail() {
 }
 
 
-ModelDrivenArch::ModelDrivenArch() {
-        StartState *ss = new StartState();
-        IdleState *is = new IdleState();
-        CheckPinState *cps = new CheckPinState();
-        ReadyState *rs = new ReadyState();
-        OverdrawnState *os = new OverdrawnState();
-        LockedState *ls = new LockedState();
-        ClosedState *cs = new ClosedState();
-        TempState *ts = new TempState();
+void SuspendedState::activate() {
+        context->changeState(READY);
+}
 
-        states.append(ss);
-        states.append(is);
-        states.append(cps);
-        states.append(rs);
-        states.append(os);
-        states.append(ls);
-        states.append(cs);
-        states.append(ts);
+void SuspendedState::balance() {
+        op->displayBalance();
+}
+
+void SuspendedState::close() {
+        context->changeState(CLOSED);
+}
+
+
+void TempState::aboveMin() {
+        context->changeState(READY);
+}
+
+void TempState::belowMin() {
+        context->changeState(OVERDRAWN);
+}
+
+void TempState::withdrawBelowMin() {
+        context->changeState(OVERDRAWN);
+        op->penalty();
+}
+
+
+ModelDrivenArch::ModelDrivenArch(OutputProcessor *op) {
+        StartState *ss = new StartState(this, op);
+        IdleState *is = new IdleState(this, op);
+        CheckPinState *cps = new CheckPinState(this, op);
+        ReadyState *rs = new ReadyState(this, op);
+        OverdrawnState *os = new OverdrawnState(this, op);
+        LockedState *ls = new LockedState(this, op);
+        SuspendedState *ss2 = new SuspendedState(this, op);
+        ClosedState *cs = new ClosedState(this, op);
+        TempState *ts = new TempState(this, op);
+
+        states.push_back(ss);
+        states.push_back(is);
+        states.push_back(cps);
+        states.push_back(rs);
+        states.push_back(os);
+        states.push_back(ls);
+        states.push_back(ss2);
+        states.push_back(cs);
+        states.push_back(ts);
  
         current = states[0];
 }
 
 ModelDrivenArch::~ModelDrivenArch() {
         for (int i = 0; i < states.size(); ++i) {
-                delete stats[i];
+                delete states[i];
         }
 }
 
@@ -158,14 +186,17 @@ void ModelDrivenArch::changeState(StateEnum stateID) {
                 case OVERDRAWN:
                         current = states[4];
                         break;
-                case LOCK:
+                case LOCKED:
                         current = states[5];
                         break;
-                case CLOSED:
+                case SUSPENDED:
                         current = states[6];
                         break;
-                case TEMP:
+                case CLOSED:
                         current = states[7];
+                        break;
+                case TEMP:
+                        current = states[8];
                         break;
                 default:
                         break;
