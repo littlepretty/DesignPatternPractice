@@ -1,10 +1,75 @@
 #ifndef _DATASTORE_HPP
 #define _DATASTORE_HPP
 
+#include <string>
+
+using namespace std;
+
+template <class T, class S>
 class DataStore {
+        private:
+                T pin;
+                T id;
+                T temp_pin;
+                T temp_id;
+
+                S balance;
+                S temp_d;
+                S temp_w;
+                S temp_balance;
         public:
                 DataStore() {};
                 virtual ~DataStore() {};
+
+                void setPin(T p) {
+                        pin = p;
+                }
+                void setId(T i) {
+                        id = i;
+                }
+                void setBalance(S b) {
+                        balance = b;
+                }
+                void setTempD(S d) {
+                        temp_d = d;
+                }
+                void setTempW(S w) {
+                        temp_w = w;
+                }
+                void setTempPin(T p) {
+                        temp_pin = p;
+                }
+                void setTempId(T i) {
+                        temp_id = i;
+                }
+                void setTempBalance(S b) {
+                        temp_balance = b;
+                }
+
+                T getPin() {
+                        return pin;
+                }
+                T getId() {
+                        return id;
+                }
+                S getBalance() {
+                        return balance;
+                }
+                S getTempD() {
+                        return temp_d;
+                }
+                S getTempW() {
+                        return temp_w;
+                }
+                T getTempPin() {
+                        return temp_pin;
+                }
+                T getTempId() {
+                        return temp_id;
+                }
+                S getTempB() {
+                        return temp_balance;
+                }
 };
 
 class DataStore1: public DataStore {
@@ -88,53 +153,53 @@ class DataStore2: public DataStore {
                 
                 void setPin(int p) {
                         pin = p;
-                }
+                };
                 void setId(int i) {
                         id = i;
-                }
+                };
                 void setBalance(int b) {
                         balance = b;
-                }
+                };
                 void setTempD(int d) {
                         temp_d = d;
-                }
+                };
                 void setTempW(int w) {
                         temp_w = w;
-                }
+                };
                 void setTempPin(int p) {
                         temp_pin = p;
-                }
+                };
                 void setTempId(int i) {
-                        temp_i = i;
-                }
+                        temp_id = i;
+                };
                 void setTempBalance(int b) {
                         temp_balance = b;
-                }
+                };
                 
                 int getPin() {
                         return pin;
-                }
+                };
                 int getId() {
                         return id;
-                }
+                };
                 int getBalance() {
                         return balance;
-                }
+                };
                 int getTempD() {
                         return temp_d;
-                }
+                };
                 int getTempW() {
                         return temp_w;
-                }
+                };
                 int getTempPin() {
                         return temp_pin;
-                }
+                };
                 int getTempId() {
                         return temp_id;
-                }
+                };
                 int getTempBalance() {
                         return temp_balance;
-                }
+                };
 };
 
 #endif
