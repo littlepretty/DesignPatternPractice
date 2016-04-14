@@ -8,26 +8,26 @@
 using namespace std;
 
 void testAccount1() {
-        ModelDrivenArch* mda = new ModelDrivenArch();
-        ConcreateFactory1* cf1 = new ConcreateFactory1();
-        Account1* a1 = new Account1(mda);
+        ConcreteFactory1* cf1 = new ConcreteFactory1();
         OutputProcessor* op1 = new OutputProcessor();
-
-        a1.init(cf1);
-        op1.init(cf1);
+        op1->init(cf1);
+        
+        ModelDrivenArch* mda = new ModelDrivenArch(op1);
+        Account1* a1 = new Account1(mda);
+        a1->init(cf1);
 
         delete op1;
         delete a1;
 }
 
 void testAccount2() {
-        ModelDrivenArch* mda = new ModelDrivenArch();
-        ConcreateFactory2* cf2 = new ConcreateFactory2();
-        Account2* a2 = new Account2(mda);
+        ConcreteFactory2* cf2 = new ConcreteFactory2();
         OutputProcessor* op2 = new OutputProcessor();
-
-        a2.init(cf2);
-        op2.init(cf2);
+        op1->init(cf2);
+        
+        ModelDrivenArch* mda = new ModelDrivenArch(op2);
+        Account1* a2 = new Account2(mda);
+        a1->init(cf2);
 
         delete op2;
         delete a2;

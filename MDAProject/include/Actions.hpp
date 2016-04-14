@@ -1,48 +1,26 @@
-#include <iostream>
+#ifndef _ACTIONS_HPP
+#define _ACTIONS_HPP
 
-class StorePinAction {
+#include "DataStore.hpp"
+
+class AbstractFactory;
+
+class StoreCardDataAction {
         public:
-                virtual void storePin(DataStore *ds) = 0;
+                StoreCardDataAction() {};
+                virtual ~StorePinAction() {};
+
+                virtual void storeCardData(DataStore *ds) = 0;
 };
 
-class SPAction1: public StorePinAction {
+class SCDAction1: public StoreCardDataAction {
         public:
-                virtual void storePin(DataStore *ds);
+                virtual void storeCardData(DataStore *ds);
 };
 
-class SPAction2: public StorePinAction {
+class SCDAction2: public StoreCardDataAction {
         public:
-                virtual void storePin(DataStore *ds);
-};
-
-class StoreBalanceAction {
-        public:
-                virtual void storeBalance(DataStore *ds) = 0;
-};
-
-class SBAction1: public StoreBalanceAction {
-        public:
-                virtual void storeBalance(DataStore *ds);
-};
-
-class SBAction2: public StoreBalanceAction {
-        public:
-                virtual void storeBalance(DataStore *ds);
-}
-
-class StoreIdAction {
-        public:
-                virtual void storeId(DataStore *ds) = 0;
-};
-
-class SIAction1: public StoreIdAction {
-        public:
-                virtual void storeId(DataStore *ds);
-};
-
-class SIAction2: public StoreIdAction {
-        public:
-                virtual void storeId(DataStore *ds);
+                virtual void storeCardData(DataStore *ds);
 };
 
 class IncorrectPinMsgAction {
@@ -197,7 +175,7 @@ class DWAction2: public DoWithdrawAction {
 
 class BelowMinMsgAction {
         public:
-                virtual virtual void belowMinMsg() = 0;
+                virtual void belowMinMsg() = 0;
 };
 
 class BMMAction1: public BelowMinMsgAction {
@@ -210,12 +188,26 @@ class BMMAction2: public BelowMinMsgAction {
                 virtual void belowMinMsg();
 };
 
+class PenaltyAction {
+        public:
+                virtual void penalty() = 0;
+};
+
+class PAction1: public PenaltyAction {
+        public:
+                virtual void penalty();
+};
+
+class PAction2: public PenaltyAction {
+        public:
+                virtual void penalty();
+};
+
+
 class OutputProcessor {
         private:
                 DataStore *ds;
-                StorePinAction *spa;
-                StoreBalanceAction *sba;
-                StoreIdAction *sia;
+                StoreCardDataAction *scda;
                 IncorrectPinMsgAction *ipma;
                 IncorrectIdMsgAction *iima;
                 TooManyAttemptMsgAction *tmama;
@@ -226,13 +218,12 @@ class OutputProcessor {
                 DisplayBalanceAction *dba;
                 DoWithdrawAction *dwa;
                 BelowMinMsgAction *bmma;
+                PenaltyAction *pa;
         public:
-                OutputProcessor(DataStore *ds);
+                OutputProcessor();
                 virtual ~OutputProcessor() {
                        delete ds;
-                       delete spa;
-                       delete sba;
-                       delete sia;
+                       delete scda;
                        delete ipma;
                        delete iima;
                        delete tmama;
@@ -243,49 +234,48 @@ class OutputProcessor {
                        delete dba;
                        delete dwa;
                        delete bmma;
+                       delete pa;
                 };
                 
                 void init(AbstractFactory *af);
 
-                void storePin() {
-                        spa->storePin(ds);
-                }
-                void storeBalance() {
-                        sba->storeBalance(ds);
-                }
-                void storeId() {
-                        sia->storeId(ds);
-                }
+                void storeCardData() {
+                        scda->storeCardData(ds);
+                };
                 void incorrectPinMsg() {
                         ipma->incorrectPinMsg();
-                }
+                };
                 void incorrectIdMsg() {
                         iima->incorrectIdMsg();
-                }
+                };
                 void tooManyAttemptMsg() {
                         tmama->tooManyAttemptMsg();
-                }
+                };
                 void promptPin() {
                         ppa->promptPin();
-                }
+                };
                 void displayMenu() {
                         dma->displayMenu();
-                }
+                };
                 void doDeposit() {
                         dda->doDeposit(ds);
-                }
+                };
                 void noFundMsg() {
                         nfma->noFundMsg();
-                }
+                };
                 void displayBalance() {
                         dba->displayBalance(ds);
-                }
+                };
                 void doWithdraw() {
                         dwa->doWithdraw(ds);
-                }
+                };
                 void belowMinMsg() {
                         bmma->belowMinMsg();
-                }
+                };
+                void penalty() {
+                        pa->penalty();
+                };
 };
 
+#endif
 
