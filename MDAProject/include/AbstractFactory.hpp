@@ -1,13 +1,16 @@
-#include <iostream>
-#include "DataStore.h"
-#include "Actions.h"
+#ifndef _ABSTRACTFACTORY_HPP
+#define _ABSTRACTFACTORY_HPP
+
+#include "DataStore.hpp"
+#include "Actions.hpp"
 
 class AbstractFactory {
         public:
-                AbstractFacotry() {}
-                virtual AbstractFacotry() {}
+                AbstractFactory() {};
+                virtual ~AbstractFactory() {};
 
-                virtual DataStore *createDS() = 0;
+                virtual DataStore1 *createDS1() = 0;
+                virtual DataStore2 *createDS2() = 0;
                 virtual StorePinAction *createSPA() = 0;
                 virtual StoreBalanceAction *createSBA() = 0;
                 virtual StoreIdAction *createSIA() = 0;
@@ -23,12 +26,12 @@ class AbstractFactory {
                 virtual BelowMinMsgAction *createBMMA() = 0;
 };
 
-class ConcreteFactory1: public AbstractFacotry {
+class ConcreteFactory1: public AbstractFactory {
         public:
-                ConcreteFactory1() {}
-                virtual ~ConcreteFactory1() {}
+                ConcreteFactory1() {};
+                virtual ~ConcreteFactory1() {};
 
-                virtual DataStore *createDS();
+                virtual DataStore1 *createDS1();
                 virtual StorePinAction *createSPA();
                 virtual StoreBalanceAction *createSBA();
                 virtual StoreIdAction *createSIA();
@@ -44,12 +47,12 @@ class ConcreteFactory1: public AbstractFacotry {
                 virtual BelowMinMsgAction *createBMMA();
 };
 
-class ConcreteFactory2: public AbstractFacotry {
+class ConcreteFactory2: public AbstractFactory {
         public:
-                ConcreteFactory2() {}
-                virtual ~ConcreteFactory2() {}
+                ConcreteFactory2() {};
+                virtual ~ConcreteFactory2() {};
                 
-                virtual DataStore *createDS();
+                virtual DataStore2 *createDS2();
                 virtual StorePinAction *createSPA();
                 virtual StoreBalanceAction *createSBA();
                 virtual StoreIdAction *createSIA();
@@ -64,4 +67,6 @@ class ConcreteFactory2: public AbstractFacotry {
                 virtual DoWithdrawAction *createDWA();
                 virtual BelowMinMsgAction *createBMMA();
 };
+
+#endif
 
