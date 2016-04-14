@@ -1,32 +1,26 @@
 #ifndef _ACCOUNTS_HPP
 #define _ACCOUNTS_HPP
 
-#include "AbstractFactory.hpp"
 #include "ModelDrivenArch.hpp"
-#include "DataStore.h"
+#include "DataStore.hpp"
 
-class Account {
+class AbstractFactory;
+
+class Account1: public Account {
         private:
                 ModelDrivenArch *mda;
-                DataStore *ds; 
+                DataStore1 *ds; 
                 const int min_balance;
                 const int max_attempts;
         public:
-                Account() {}
-                Account(ModelDrivenArch *_mda): mda(_mda) {}
-                virtual ~Account() {
+                Account1(ModelDrivenArch *m, int mb = 500, int ma = 3):
+                        mda(m), min_balance(mb), max_attempts(ma) {};
+                virtual ~Account1() {
                         delete mda;
                         delete ds;
                 }
-                virtual void init(AbstractFactory *af) = 0;
-}
 
-class Account1 {
-        public:
-                Account1() {}
-                virtual ~Account1() {};
-
-                virtual void init(AbstractFactory *af);
+                void init(AbstractFactory *af);
         
                 void open(string p, string y, float a);
                 void pin(string x);
@@ -39,12 +33,21 @@ class Account1 {
                 void unlock(string x);
 };
 
-class Account2 {
+class Account2: {
+        private:
+                ModelDrivenArch *mda;
+                DataStore2 *ds; 
+                const int min_balance;
+                const int max_attempts;
         public:
-                Account2() {}
-                virtual ~Account2() {}
+                Account2(ModelDrivenArch *m, int mb = 0, int ma = 2):
+                        mda(m), min_balance(mb), max_attempts(ma) {}; 
+                virtual ~Account2() {
+                        delete mda;
+                        delete ds;
+                }
 
-                virtual void init(AbstractFactory *af);
+                void init(AbstractFactory *af);
 
                 void OPEN(int p, int y, int a);
                 void PIN(int x);
@@ -59,3 +62,4 @@ class Account2 {
 };
 
 #endif
+

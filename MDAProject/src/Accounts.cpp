@@ -1,26 +1,22 @@
 #include "Accounts.hpp"
 #include "AbstractFactory.hpp"
-#include "ModelDrivenArch.hpp"
 
 
 void Account1::init(AbstractFactory *af) {
-        ds = af->createDataStore();
+        ds = af->createDS1();
 }
-
-const int Account1::min_balance = 500;
-const int Account1::max_attempts = 3;
 
 void Account1::open(string p, string y, float a) {
         ds->setTempPin(p);
         ds->setTempId(y);
-        ds->setTempBalance(b);
+        ds->setTempBalance(a);
         mda->open();
 }
 
 void Account1::pin(string x) {
-        if (x == ds->pin) {
+        if (x == ds->getPin()) {
                 mda->correctPin();
-                if (ds->balance > min_balance) {
+                if (ds->getBalance() > min_balance) {
                         mda->aboveMin();
                 } else {
                         mda->belowMin();
@@ -32,7 +28,7 @@ void Account1::pin(string x) {
 
 void Account1::deposit(float d) {
         ds->setTempD(d);
-        mda->deposite();
+        mda->deposit();
         if (ds->getBalance() > min_balance) {
                 mda->aboveMin();
         } else {
@@ -51,7 +47,7 @@ void Account1::withdraw(float w) {
         if (ds->getBalance() > min_balance) {
                 mda->aboveMin();
         } else {
-                mda->belowMin();
+                mda->withdrawBelowMin();
         }
 }
 
@@ -75,7 +71,7 @@ void Account1::lock(string x) {
         if (x == ds->getPin()) {
                 mda->lock();
         } else {
-                mad->lockFail();
+                mda->lockFail();
         }
 }
 
@@ -92,11 +88,9 @@ void Account1::unlock(string x) {
         }
 }
 
-const int Account2::min_balance = 0;
-const int Account2::max_attempts = 2
 
 void Account2::init(AbstractFactory *af) {
-        ds = af->createDS();
+        ds = af->createDS2();
 }
 
 void Account2::OPEN(int p, int y, int a) {
@@ -118,7 +112,11 @@ void Account2::PIN(int x) {
 void Account2::DEPOSIT(int d) {
         ds->setTempD(d);
         mda->deposit();
-        mda->aboveMin();
+        if (ds->getBalance() > min_balance) {
+                mda->aboveMin();
+        } else {
+                mda->belowMin();
+        }
 }
 
 void Account2::WITHDRAW(int w) {
@@ -143,17 +141,16 @@ void Account2::LOGIN(int y) {
         }
 }
 
-void Account2::LIGOUT() {
+void Account2::LOGOUT() {
         mda->logout();
 }
 
 void Account2::suspend() {
-        mda->lock();
+        mda->suspend();
 }
 
 void Account2::activate() {
-        mda->unlock();
-        mda->aboveMin();
+        mda->activate();
 }
 
 void Account2::close() {
